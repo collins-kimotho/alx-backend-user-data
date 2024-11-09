@@ -59,7 +59,8 @@ def get_logger() -> logging.Logger:
     logger.setLevel(logging.INFO)
     logger.propagate = False  # Prevent logs from propagating to other loggers
 
-    # Create a StreamHandler with a RedactingFormatter set up to redact PII_FIELDS
+    # Create a StreamHandler with a RedactingFormatter
+    # set up to redact PII_FIELDS
     stream_handler = logging.StreamHandler()
     stream_handler.setFormatter(RedactingFormatter(fields=PII_FIELDS))
     logger.addHandler(stream_handler)
