@@ -1,13 +1,16 @@
 #!/usr/bin/env python3
 
 """
-Module that defines a RedactingFormatter for logging, which obfuscates
-sensitive fields in log messages.
+Module that defines a logger with a RedactingFormatter to obfuscate sensitive
+information in log messages.
 """
 
 import re
 import logging
 from typing import List
+
+# Defining the fields in user_data.csv that are considered sensitive
+PII_FIELDS = ("name", "email", "ssn", "password", "phone")
 
 
 def filter_datum(fields: List[str], redaction: str, message: str,
@@ -45,3 +48,20 @@ class RedactingFormatter(logging.Formatter):
         record.msg = filter_datum(self.fields, self.REDACTION,
                                   record.getMessage(), self.SEPARATOR)
         return super().format(record)
+
+
+def get_logger() -> logging.Logger:
+    """
+    Creates and configures a logger for user data.
+    """
+    # Create a logger named "user_data" with INFO level
+    logger = logging.getLogger("user_data")
+    logger.setLevel(logging.INFO)
+    logger.propagate = False  # Prevent logs from propagating to other loggers
+
+    # Create a StreamHandler with a RedactingFormatter set up to redact PII_FIELDS
+    stream_handler = logging.StreamHandler()
+    stream_handler.setFormatter(RedactingFormatter(fields=PII_FIELDS))
+    logger.addHandler(stream_handler)
+
+    return logger
