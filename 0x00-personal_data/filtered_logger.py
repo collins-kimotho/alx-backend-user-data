@@ -9,6 +9,7 @@ import re
 import logging
 from typing import List
 
+
 def filter_datum(fields: List[str], redaction: str, message: str,
                  separator: str) -> str:
     """
@@ -20,6 +21,7 @@ def filter_datum(fields: List[str], redaction: str, message: str,
         lambda match: match.group().split('=')[0] + f"={redaction}",
         message
     )
+
 
 class RedactingFormatter(logging.Formatter):
     """ Redacting Formatter class for obfuscating sensitive information. """
