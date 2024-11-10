@@ -4,7 +4,7 @@
 Module that defines a logger with a RedactingFormatter to obfuscate sensitive
 information in log messages.
 """
-
+import os
 import re
 import logging
 from typing import List
