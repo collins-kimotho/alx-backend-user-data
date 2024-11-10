@@ -86,3 +86,25 @@ def get_db() -> mysql.connector.connection.MySQLConnection:
         host=host,
         database=database
     )
+
+
+# Main function
+def main() -> None:
+    """Main function to retrieve data and log it in filtered format."""
+    db = get_db()
+    cursor = db.cursor(dictionary=True)
+    cursor.execute("SELECT * FROM users;")
+    logger = get_logger()
+
+    for row in cursor:
+        # Build the log message from the row's key-value pairs
+        message_parts = [f"{key}={value}" for key, value in row.items()]
+        message = "; ".join(message_parts) + ";"
+        logger.info(message)
+
+    cursor.close()
+    db.close()
+
+
+if __name__ == "__main__":
+    main()
