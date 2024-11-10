@@ -23,3 +23,16 @@ def hash_password(password: str) -> bytes:
     # and return the hashed result as bytes.
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
     return hashed_password
+
+
+def is_valid(hashed_password: bytes, password: str) -> bool:
+    """
+    Validates if a given password matches the hashed password using bcrypt.
+    Args:
+        hashed_password (bytes): The hashed password to check against.
+        password (str): The plain password to verify.
+    Returns:
+        bool:
+        True if the password matches the hashed password, False otherwise.
+    """
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
