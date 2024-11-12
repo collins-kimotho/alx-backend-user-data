@@ -20,6 +20,8 @@ auth = None
 auth_type = getenv("AUTH_TYPE")
 if auth_type == "auth":
     auth = Auth()
+if auth_type == 'basic_auth':
+    auth = BasicAuth()
 
 
 @app.errorhandler(404)
