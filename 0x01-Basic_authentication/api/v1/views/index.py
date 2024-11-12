@@ -33,3 +33,15 @@ def unauthorized() -> None:
         By calling this endpoint, it triggers the 401 error handler.
     """
     return jsonify({"error": "Unauthorized"}), 401
+
+
+@app_views.route('forbidden', strict_slashes=False)
+def forbidden() -> None:
+    """
+    Custom error handler for 403 Forbidden status code.
+        Args:
+        error (Forbidden): The 403 error that was raised.
+            Returns:
+        Tuple[Response, int]: JSON response with error message&status code403.
+    """
+    return jsonify({"error": "Forbidden"}), 403
