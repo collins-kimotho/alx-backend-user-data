@@ -32,4 +32,5 @@ def unauthorized() -> None:
     Test endpoint that raises a 401 Unauthorized error.
         By calling this endpoint, it triggers the 401 error handler.
     """
-    abort(401)
+    return jsonify({"error": "Unauthorized"}), 401
+
