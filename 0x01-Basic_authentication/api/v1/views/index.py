@@ -33,4 +33,3 @@ def unauthorized() -> None:
         By calling this endpoint, it triggers the 401 error handler.
     """
     return jsonify({"error": "Unauthorized"}), 401
-
