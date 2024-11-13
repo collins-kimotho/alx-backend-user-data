@@ -215,7 +215,7 @@ Now you will create a class to manage the API authentication.
   
   This class is the template for all authentication system you will implement.
 ```
-  bob@dylan:~$ cat main_0.py
+bob@dylan:~$ cat main_0.py
 #!/usr/bin/env python3
 """ Main 0
 """
