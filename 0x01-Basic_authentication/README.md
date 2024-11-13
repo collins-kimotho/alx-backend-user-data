@@ -80,6 +80,7 @@ bob@dylan:~$
 
 * GitHub repository: alx-backend-user-data
 * Directory: 0x01-Basic_authentication
+<hr>
 
 ### 1. Error handler: Unauthorized
 
@@ -140,4 +141,5 @@ bob@dylan:~$
 * GitHub repository: alx-backend-user-data
 * Directory: 0x01-Basic_authentication
 * File: api/v1/app.py, api/v1/views/index.py
+<hr>
 
