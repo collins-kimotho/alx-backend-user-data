@@ -122,20 +122,13 @@ class BasicAuth(Auth):
                 User: The authenticated User instance,
                 or None if authentication fails.
             """
-        if user_email is None or not isinstance(user_email, str):
-            return None
-        if user_pwd is None or not isinstance(user_pwd, str):
-            return None
-
-        # Search for the user by email
-        users = User.search({'email': user_email})
-        if not users:
-            return None
-
-        user = users[0]  # Assuming there is only one user with a unique email
-
-        # Verify if the password matches
-        if not user.is_valid_password(user_pwd):
-            return None
-
-        return user
+        if type(user_email) == str and type(user_pwd) == str:
+            try:
+                users = User.search({'email': user_email})
+            except Exception:
+                return None
+            if len(users) <= 0:
+                return None
+            if users[0].is_valid_password(user_pwd):
+                return users[0]
+        return None
