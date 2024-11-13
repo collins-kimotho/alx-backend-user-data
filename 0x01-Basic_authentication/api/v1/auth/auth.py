@@ -10,6 +10,7 @@ from flask import request
 from typing import List, TypeVar
 import re
 
+
 class Auth:
     """
     Auth class to manage API authentication
@@ -29,7 +30,8 @@ class Auth:
         # if not excluded_paths:
         #     return True
 
-        # # Ensure the path ends with a trailing slash for comparison consistency
+        # # Ensure the path ends with a trailing slash for
+        # comparison consistency
         # if path[-1] != '/':
         #     path += '/'
 
