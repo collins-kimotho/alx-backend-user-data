@@ -765,3 +765,4 @@ Example for excluded_paths = ["/api/v1/stat*"]:
 * GitHub repository: alx-backend-user-data
 * Directory: 0x01-Basic_authentication
 * File: api/v1/auth/auth.py
+<hr>
