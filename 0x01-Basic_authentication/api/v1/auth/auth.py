@@ -8,7 +8,7 @@ authentication systems.
 
 from flask import request
 from typing import List, TypeVar
-
+import re
 
 class Auth:
     """
@@ -24,21 +24,34 @@ class Auth:
         Returns:
             bool: False for now.
         """
-        if path is None:
-            return True
-        if not excluded_paths:
-            return True
+        # if path is None:
+        #     return True
+        # if not excluded_paths:
+        #     return True
 
-        # Ensure the path ends with a trailing slash for comparison consistency
-        if path[-1] != '/':
-            path += '/'
+        # # Ensure the path ends with a trailing slash for comparison consistency
+        # if path[-1] != '/':
+        #     path += '/'
 
-        # Check if the modified path is in excluded_paths
-        for excluded_path in excluded_paths:
-            if excluded_path[-1] != '/':
-                excluded_path += '/'
-            if path == excluded_path:
-                return False
+        # # Check if the modified path is in excluded_paths
+        # for excluded_path in excluded_paths:
+        #     if excluded_path[-1] != '/':
+        #         excluded_path += '/'
+        #     if path == excluded_path:
+        #         return False
+        # return True
+
+        if path is not None and excluded_paths is not None:
+            for exclusion_path in map(lambda x: x.strip(), excluded_paths):
+                pattern = ''
+                if exclusion_path[-1] == '*':
+                    pattern = '{}.*'.format(exclusion_path[0:-1])
+                elif exclusion_path[-1] == '/':
+                    pattern = '{}/*'.format(exclusion_path[0:-1])
+                else:
+                    pattern = '{}/*'.format(exclusion_path)
+                if re.match(pattern, path):
+                    return False
         return True
 
     def authorization_header(self, request=None) -> str:
