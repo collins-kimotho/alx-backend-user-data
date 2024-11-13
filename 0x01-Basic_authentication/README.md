@@ -359,6 +359,7 @@ In the first terminal:
 bob@dylan:~$ API_HOST=0.0.0.0 API_PORT=5000 AUTH_TYPE=basic_auth python3 -m api.v1.app
  * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
 ....
+```
 In a second terminal:
 ```
 bob@dylan:~$ curl "http://0.0.0.0:5000/api/v1/status"
@@ -389,6 +390,7 @@ bob@dylan:~$
 * File: api/v1/app.py, api/v1/auth/basic_auth.py
 
 <hr>
+
 ### 7. Basic - Base64 part
 Add the method def extract_base64_authorization_header(self, authorization_header: str) -> str: in the class BasicAuth that returns the Base64 part of the Authorization header for a Basic Authentication:
 
@@ -397,6 +399,7 @@ Add the method def extract_base64_authorization_header(self, authorization_heade
 * Return None if authorization_header doesn’t start by Basic (with a space at the end)
 * Otherwise, return the value after Basic (after the space)
 * You can assume authorization_header contains only one Basic
+
 ```
 bob@dylan:~$ cat main_2.py
 #!/usr/bin/env python3
