@@ -122,13 +122,67 @@ class BasicAuth(Auth):
                 User: The authenticated User instance,
                 or None if authentication fails.
             """
-        if type(user_email) == str and type(user_pwd) == str:
-            try:
-                users = User.search({'email': user_email})
-            except Exception:
-                return None
-            if len(users) <= 0:
-                return None
-            if users[0].is_valid_password(user_pwd):
-                return users[0]
-        return None
+        if user_email is None or not isinstance(user_email, str):
+            return None
+        if user_pwd is None or not isinstance(user_pwd, str):
+            return None
+
+        # Search for the user by email
+        users = User.search({'email': user_email})
+        if not users:
+            return None
+
+        user = users[0]  # Assuming there is only one user with a unique email
+
+        # Verify if the password matches
+        if not user.is_valid_password(user_pwd):
+            return None
+
+        return user
+
+        # if type(user_email) == str and type(user_pwd) == str:
+        #         users = User.search({'email': user_email})
+        #     except Exception:
+        #         return None
+        #     if len(users) <= 0:
+        #         return None
+        #     if users[0].is_valid_password(user_pwd):
+        #         return users[0]
+        # return None
+
+    def current_user(self, request=None) -> TypeVar('User'):
+        """
+        Retrieves the User instance for a request based on BasicAuthentication.
+
+        Args:
+            request (flask.Request): The incoming HTTP request.
+
+        Returns:
+            User: The User instance associated with the provided credentials,
+                  or None if authentication fails.
+        """
+        # Step 1: Get authorization header
+        auth_header = self.authorization_header(request)
+        if auth_header is None:
+            return None
+
+        # Step 2: Extract the Base64 part
+        base64_auth_header = self.extract_base64_authorization_header(
+            auth_header)
+        if base64_auth_header is None:
+            return None
+
+        # Step 3: Decode the Base64 part
+        decoded_auth_header = self.decode_base64_authorization_header(
+            base64_auth_header)
+        if decoded_auth_header is None:
+            return None
+
+        # Step 4: Extract user credentials
+        user_email, user_pwd = self.extract_user_credentials(
+            decoded_auth_header)
+        if user_email is None or user_pwd is None:
+            return None
+
+        # Step 5: Retrieve User instance using credentials
+        return self.user_object_from_credentials(user_email, user_pwd)
