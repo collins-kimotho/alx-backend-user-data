@@ -32,7 +32,7 @@ def session_auth_login():
     except Exception:
         return jsonify({"error": "no user found for this email"}), 404
 
-    if not users or len(users) == 0:
+    if not users or len(users) <= 0:
         return jsonify({"error": "no user found for this email"}), 404
 
     user = users[0]  # Assuming email is unique
@@ -44,7 +44,7 @@ def session_auth_login():
     # Create a Session ID for the User
     session_id = auth.create_session(user.id)
     if not session_id:
-        abort(500)
+        abort(401)
 
     # Create a response with the User dictionary
     user_json = user.to_json()
