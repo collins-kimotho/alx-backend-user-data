@@ -54,7 +54,7 @@ def before_request():
             return jsonify({"error": "Unauthorized"}), 401
         user = auth.current_user(request)
         if not user:
-            return jsonify({"error": "Unauthorized"}), 401
+            return jsonify({"error": "Unauthorized"}), 403
         request.current_user = user  # Assign authenticated user to request
 
 
