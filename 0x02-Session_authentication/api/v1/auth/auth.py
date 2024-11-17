@@ -77,3 +77,24 @@ class Auth:
             TypeVar('User'): None, as user extraction is not implemented.
         """
         return None
+
+    def session_cookie(self, request=None):
+        """
+        Retrieves the value of the session cookie from a request.
+
+        Args:
+            request: The Flask request object.
+
+        Returns:
+            str: The value of the session cookie,
+            or None if not found or invalid.
+        """
+        # Return None if the request is None
+        if request is None:
+            return None
+
+        # Get the cookie name from the environment variable SESSION_NAME
+        session_name = os.getenv('SESSION_NAME', '_my_session_id')
+
+        # Return the cookie value using .get() from request.cookies
+        return request.cookies.get(session_name)
