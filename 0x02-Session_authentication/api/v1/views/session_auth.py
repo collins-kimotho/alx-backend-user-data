@@ -44,7 +44,7 @@ def session_auth_login():
     # Create a Session ID for the User
     session_id = auth.create_session(user.id)
     if not session_id:
-        abort(401)
+        abort(500)
 
     # Create a response with the User dictionary
     user_json = user.to_json()
@@ -55,3 +55,20 @@ def session_auth_login():
     response.set_cookie(session_name, session_id)
 
     return response
+
+
+@app_views.route('/auth_session/logout', methods=['DELETE'], strict_slashes=False)
+def session_auth_logout():
+    """
+    DELETE /auth_session/logout: Handle session logout.
+
+    Returns:
+        JSON response: Empty JSON dictionary with a status code of 200 on success,
+                    or aborts with a 404 status code on failure.
+    """
+    # Attempt to destroy the session
+    if not auth.destroy_session(request):
+        abort(404)
+
+    # Return an empty JSON dictionary on successful logout
+    return jsonify({}), 200
