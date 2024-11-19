@@ -9,6 +9,7 @@ from sqlalchemy.ext.declarative import declarative_base
 # Create a base class for our models
 Base = declarative_base()
 
+
 class User(Base):
     """
     User model for the `users` table.
