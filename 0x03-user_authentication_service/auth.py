@@ -44,7 +44,7 @@ class Auth:
             # Add the user to the database
             new_user = self._db.add_user(
                 email, hashed_password.decode('utf-8'))  # Store as string
-            return new_user
+        return new_user
 
     def _hash_password(self, password: str) -> bytes:
         """
