@@ -75,4 +75,3 @@ class DB:
 
         # Commit the changes to the database
         self._session.commit()
-
