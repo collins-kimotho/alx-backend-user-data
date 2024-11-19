@@ -3,12 +3,13 @@
 Authentication module for user registration and management.
 """
 
-from db import DB
-from user import User
+import bcrypt
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm.exc import NoResultFound
 from sqlalchemy.exc import InvalidRequestError
-from bcrypt import hashpw, gensalt
+
+from db import DB
+from user import User
 
 
 class Auth:
@@ -57,7 +58,7 @@ class Auth:
         """
         # Convert password string to bytes
         password_bytes = password.encode('utf-8')
-        salt = gensalt()  # Generate a salt
+        salt = bcrypt.gensalt()  # Generate a salt
         # Hash the password with the salt
-        hashed_password = hashpw(password_bytes, salt)
+        hashed_password = bcrypt.hashpw(password_bytes, salt)
         return hashed_password
