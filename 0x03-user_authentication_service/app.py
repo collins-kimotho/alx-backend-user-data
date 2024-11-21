@@ -17,12 +17,13 @@ def home():
     """Return a simple JSON response."""
     return jsonify({"message": "Bienvenue"})
 
+
 @app.route('/users', methods=['POST'], strict_slashes=False)
 def users() -> str:
     """
     POST /users endpoint for user registration
 
-    Expects form data: 
+    Expects form data:
         - email: The user's email
         - password: The user's password
     Returns:
@@ -36,7 +37,7 @@ def users() -> str:
         return jsonify({
             "message": "email and password are requred"
         }), 400
-    
+
     try:
         # Register the user
         user = AUTH.register_user(email, password)
@@ -44,7 +45,6 @@ def users() -> str:
     except ValueError:
         # Handle duplicate email registration
         return jsonify({"message": "email already registered"}), 400
-
 
 
 # Run the app when the script is executed
