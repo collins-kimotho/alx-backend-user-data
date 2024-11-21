@@ -46,6 +46,7 @@ def users() -> str:
         # Handle duplicate email registration
         return jsonify({"message": "email already registered"}), 400
 
+
 @app.route("/sessions", methods=["POST"])
 def login() -> str:
     """
