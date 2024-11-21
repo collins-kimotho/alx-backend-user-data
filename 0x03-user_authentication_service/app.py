@@ -3,7 +3,7 @@
 Flask app that returns a simple JSON response.
 """
 
-from flask import Flask, jsonify, request, abort
+from flask import Flask, jsonify, request, abort, make_response
 from auth import Auth
 
 # Initialize the Flask app
@@ -47,7 +47,7 @@ def users() -> str:
         return jsonify({"message": "email already registered"}), 400
 
     @app.route("/sessions", methods=["POST"])
-    def login():
+    def login() -> str:
         """
         POST /sessions route to log in a user.
         Expects form data with "email" and "password".
@@ -70,7 +70,7 @@ def users() -> str:
     response = jsonify({"email": email, "message": "logged in"})
     response.set_cookie("session_id", session_id)
     return response
-    
+
 
 # Run the app when the script is executed
 if __name__ == "__main__":
