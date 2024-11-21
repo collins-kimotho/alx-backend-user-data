@@ -3,7 +3,7 @@
 Flask app that returns a simple JSON response.
 """
 
-from flask import Flask, jsonify, request
+from flask import Flask, jsonify, request, abort
 from auth import Auth
 
 # Initialize the Flask app
@@ -55,27 +55,22 @@ def users() -> str:
     email = request.form.get("email")
     password = request.form.get("password")
 
-    # if not email or not password:
-    #     abort(401)  # Invalid request if email or password is missing.
+    if not email or not password:
+        abort(401)  # Invalid request if email or password is missing.
 
-    # if not AUTH.valid_login(email, password):
-    #     abort(401)  # Invalid login credentials.
-
-    # # Create a new session.
-    # session_id = AUTH.create_session(email)
-    # if not session_id:
-    #     abort(401)  # Abort if the session could not be created.
-
-    # # Set session_id in a cookie and return a JSON response.
-    # response = jsonify({"email": email, "message": "logged in"})
-    # response.set_cookie("session_id", session_id)
-    # return response
     if not AUTH.valid_login(email, password):
-        abort(401)
+        abort(401)  # Invalid login credentials.
+
+    # Create a new session.
     session_id = AUTH.create_session(email)
+    if not session_id:
+        abort(401)  # Abort if the session could not be created.
+
+    # Set session_id in a cookie and return a JSON response.
     response = jsonify({"email": email, "message": "logged in"})
     response.set_cookie("session_id", session_id)
     return response
+    
 
 # Run the app when the script is executed
 if __name__ == "__main__":
