@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """
 Flask app that returns a simple JSON response.
+Flask app with user authentication features.
 """
 
 from flask import Flask, jsonify, request, abort, make_response
@@ -71,6 +72,19 @@ def login() -> str:
     response = jsonify({"email": email, "message": "logged in"})
     response.set_cookie("session_id", session_id)
     return response
+
+
+@app.route('/profile', methods=["GET"], strict_slashes=False)
+def profile() -> str:
+    """
+    GET /profile route to fetch the user's email based on their session_id.
+    Expects "session_id" in the request cookies.
+    """
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if user is None:
+        abort(403)
+    return jsonify({"email": user.email}), 200
 
 
 # Run the app when the script is executed
