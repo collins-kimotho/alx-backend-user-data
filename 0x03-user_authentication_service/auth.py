@@ -131,30 +131,19 @@ class Auth:
         Raises:
             ValueError: If th rt is invalid or no user is found.
         """
-        # user = None
-        # try:
-        #     user = self._db.find_user_by(reset_token=reset_token)
-        # except NoResultFound:
-        #     user = None
-        # if user is None:
-        #     raise ValueError()
-        # new_password_hash = _hash_password(password)
-        # self._db.update_user(
-        #     user.id,
-        #     hashed_password=new_password_hash,
-        #     reset_token=None,
-        # )
+        user = None
         try:
-            # Find the user by the reset token
             user = self._db.find_user_by(reset_token=reset_token)
-            
-            # Hash the new password
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-
-            # Update the user's password and reset the reset_token to None
-            self._db.update_user(user.id, hashed_password=hashed_password, reset_token=None)
-        except Exception:
-            raise ValueError("Invalid reset token")
+        except NoResultFound:
+            user = None
+        if user is None:
+            raise ValueError()
+        new_password_hash = _hash_password(password)
+        self._db.update_user(
+            user.id,
+            hashed_password=new_password_hash,
+            reset_token=None,
+        )
 # #!/usr/bin/env python3
 # """
 # Authentication module for user registration and management.
