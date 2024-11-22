@@ -1,72 +1,117 @@
+#!/usr/bin/env python3
+"""
+A simple end-to-end (E2E) integration test for `app.py`.
+"""
 import requests
-
-BASE_URL = "http://127.0.0.1:5000"
 
 
 def register_user(email: str, password: str) -> None:
-    """Registers a new user."""
-    response = requests.post("{}/users".format(BASE_URL), data={"email": email, "password": password})
-    assert response.status_code == 200, "Unexpected status code: {}".format(response.status_code)
-    assert response.json() == {"email": email, "message": "user created"}, "Unexpected response: {}".format(response.json())
+    """
+    Registers a new user.
+    """
+    url = "{}/users".format(BASE_URL)
+    body = {
+        'email': email,
+        'password': password,
+    }
+    res = requests.post(url, data=body)
+    assert res.status_code == 200
+    assert res.json() == {"email": email, "message": "user created"}
+    res = requests.post(url, data=body)
+    assert res.status_code == 400
+    assert res.json() == {"message": "email already registered"}
 
 
 def log_in_wrong_password(email: str, password: str) -> None:
-    """Attempts to log in with an incorrect password."""
-    response = requests.post("{}/sessions".format(BASE_URL), data={"email": email, "password": password})
-    assert response.status_code == 401, "Unexpected status code: {}".format(response.status_code)
+    """Tests logging in with a wrong password.
+    """
+    url = "{}/sessions".format(BASE_URL)
+    body = {
+        'email': email,
+        'password': password,
+    }
+    res = requests.post(url, data=body)
+    assert res.status_code == 401
 
 
 def log_in(email: str, password: str) -> str:
-    """Logs in with valid credentials and returns the session ID."""
-    response = requests.post("{}/sessions".format(BASE_URL), data={"email": email, "password": password})
-    assert response.status_code == 200, "Unexpected status code: {}".format(response.status_code)
-    session_id = response.cookies.get("session_id")
-    assert session_id is not None, "Session ID not found in cookies"
-    return session_id
+    """Tests logging in.
+    """
+    url = "{}/sessions".format(BASE_URL)
+    body = {
+        'email': email,
+        'password': password,
+    }
+    res = requests.post(url, data=body)
+    assert res.status_code == 200
+    assert res.json() == {"email": email, "message": "logged in"}
+    return res.cookies.get('session_id')
 
 
 def profile_unlogged() -> None:
-    """Attempts to access the profile endpoint without being logged in."""
-    response = requests.get("{}/profile".format(BASE_URL))
-    assert response.status_code == 403, "Unexpected status code: {}".format(response.status_code)
+    """Tests retrieving profile information whilst logged out.
+    """
+    url = "{}/profile".format(BASE_URL)
+    res = requests.get(url)
+    assert res.status_code == 403
 
 
 def profile_logged(session_id: str) -> None:
-    """Accesses the profile endpoint with a valid session ID."""
-    response = requests.get("{}/profile".format(BASE_URL), cookies={"session_id": session_id})
-    assert response.status_code == 200, "Unexpected status code: {}".format(response.status_code)
-    assert "email" in response.json(), "Unexpected response: {}".format(response.json())
+    """Tests retrieving profile information whilst logged in.
+    """
+    url = "{}/profile".format(BASE_URL)
+    req_cookies = {
+        'session_id': session_id,
+    }
+    res = requests.get(url, cookies=req_cookies)
+    assert res.status_code == 200
+    assert "email" in res.json()
 
 
 def log_out(session_id: str) -> None:
-    """Logs out by invalidating the session ID."""
-    response = requests.delete("{}/sessions".format(BASE_URL), cookies={"session_id": session_id})
-    assert response.status_code == 200, "Unexpected status code: {}".format(response.status_code)
-    assert response.json() == {"message": "session deleted"}, "Unexpected response: {}".format(response.json())
+    """Tests logging out of a session.
+    """
+    url = "{}/sessions".format(BASE_URL)
+    req_cookies = {
+        'session_id': session_id,
+    }
+    res = requests.delete(url, cookies=req_cookies)
+    assert res.status_code == 200
+    assert res.json() == {"message": "Bienvenue"}
 
 
 def reset_password_token(email: str) -> str:
-    """Requests a password reset token."""
-    response = requests.post("{}/reset_password".format(BASE_URL), data={"email": email})
-    assert response.status_code == 200, "Unexpected status code: {}".format(response.status_code)
-    reset_token = response.json().get("reset_token")
-    assert reset_token is not None, "Reset token not found in response"
-    return reset_token
+    """Tests requesting a password reset.
+    """
+    url = "{}/reset_password".format(BASE_URL)
+    body = {'email': email}
+    res = requests.post(url, data=body)
+    assert res.status_code == 200
+    assert "email" in res.json()
+    assert res.json()["email"] == email
+    assert "reset_token" in res.json()
+    return res.json().get('reset_token')
 
 
 def update_password(email: str, reset_token: str, new_password: str) -> None:
-    """Updates the password using a reset token."""
-    response = requests.put(
-        "{}/reset_password".format(BASE_URL),
-        data={"email": email, "reset_token": reset_token, "new_password": new_password},
-    )
-    assert response.status_code == 200, "Unexpected status code: {}".format(response.status_code)
-    assert response.json() == {"email": email, "message": "Password updated"}, "Unexpected response: {}".format(response.json())
+    """Tests updating a user's password.
+    """
+    url = "{}/reset_password".format(BASE_URL)
+    body = {
+        'email': email,
+        'reset_token': reset_token,
+        'new_password': new_password,
+    }
+    res = requests.put(url, data=body)
+    assert res.status_code == 200
+    assert res.json() == {"email": email, "message": "Password updated"}
 
 
 EMAIL = "guillaume@holberton.io"
 PASSWD = "b4l0u"
 NEW_PASSWD = "t4rt1fl3tt3"
+BASE_URL = "http://0.0.0.0:5000"
+
 
 if __name__ == "__main__":
     register_user(EMAIL, PASSWD)
